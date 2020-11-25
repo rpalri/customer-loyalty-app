@@ -1,5 +1,4 @@
 # Customer Loyalty App
-# Raghav Palriwala, Indore, India
 
 ## Description
 Manufacturers and distributors of commodities commonly fail to connect to their end consumer. Although social media has helped them connect them with potential buyers and current users, they miss out on connecting the local dealers/retailers and hence fail to connect the entire set of stakeholders in the supply chain.
