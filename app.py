@@ -18,7 +18,7 @@ from werkzeug.utils import secure_filename
 from helpers import login_required
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
-UPLOAD_FOLDER = "/home/ubuntu/finalp/app/uploads"
+UPLOAD_PATH = "uploads"
 
 os.environ["TWILIO_ACCOUNT_SID"] = ""
 os.environ["TWILIO_AUTH_TOKEN"] = ""
@@ -40,7 +40,7 @@ def after_request(response):
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["UPLOAD_PATH"] = UPLOAD_PATH
 app.config["MAX_CONTENT_LENGTH"] = 10240 * 10240
 app.config["UPLOAD_EXTENSIONS"] = [".jpg", ".png", ".jpeg"]
 Session(app)
@@ -393,7 +393,7 @@ def validate_image(stream):
 @app.route("/uploads/<filename>")
 @login_required
 def send_file(filename):
-    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+    return send_from_directory(app.config["UPLOAD_PATH"], filename)
 
 
 def make_unique(string):
@@ -434,7 +434,7 @@ def invoice():
                         file_ext != validate_image(image_raw.stream):
                     return "Invalid image", 400
                 new_name = make_unique(filename)
-                image_raw.save(os.path.join(app.config["UPLOAD_FOLDER"], new_name))
+                image_raw.save(os.path.join(app.config["UPLOAD_PATH"], new_name))
                 image = new_name
                 flash("Invoice submitted successfully!")
 
