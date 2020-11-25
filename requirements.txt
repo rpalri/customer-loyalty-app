@@ -5,11 +5,4 @@ Werkzeug==1.0.1
 pandas
 numpy
 flask
-sqlite3
-urllib.request
-urllib.parse
-twilio.rest
-random
-uuid
-tempfile
 gunicorn
