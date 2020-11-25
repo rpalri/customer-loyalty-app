@@ -1,0 +1,365 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Request Quote
+{% endblock %}
+
+{% block main %}
+    {% if notif %}
+        <p class="alert alert-primary border text-center"><strong>{{ notif }}</strong></p>
+    {% endif %}
+    {% if session["type"] == "ADMIN" %}
+        <div class="form-group">
+            <a class="btn btn-primary" href="/view_invoice">View Accumulated Points Tally</a>
+        </div>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+    {% endif %}
+    {% if session["type"] == "TRADER" %}
+        <div class="form-group">
+            <a class="btn btn-primary" href="/request_OTP">Register New Plumber</a>
+            <a class="btn btn-primary" href="/invoice">Upload Invoice</a>
+        </div>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+        {% if points %}
+        <table class="table table-striped" id="points">
+            <h2>Points Earned</h2>
+            <input type="text" class="form-control" id="points_i" onkeyup="points_filter()" placeholder="Search by plumber name.." style="width: 300px;">
+            <thead>
+                <tr>
+                    <th>Plumber</th>
+                    <th>Points</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <body>
+                {% for row in points %}
+                <tr>
+                    <td>{{ row[0] }} {{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>
+                    <form action="/" method="post">
+                        {% if row[4] != "True" %}
+                        <ul>Enter points to request for prize</ul>
+                        <ul><input autocomplete="off" autofocus class="form-control" name="points" placeholder="Point(s)" type="number" max="{{ row[2] }}" min="0" style="width: 120px;">&emsp;<button class="btn btn-primary" type="submit" value="submit">Request Redemption</button></ul>
+                        <ul><input autocomplete="off" hidden class="form-control" name="plumber" type="number" value="{{ row[3] }}"></ul>
+                        <ul><input autocomplete="off" hidden class="form-control" name="dealer" type="number" value="{{ session["user_id"] }}"></ul>
+                        {% else %}
+                        <ul>Last request is under process.</ul>
+                        {% endif %}
+                    </form>
+                </td>
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+        {% endif %}
+    {% elif session["type"] == "PLUMBER" %}
+        <table calss="table table-striped">
+            <h2>Points Earned</h2>
+            {% for row in points %}
+            <h3>{{ row[0] }}</h3>
+            {% endfor %}
+        </table>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+    {% endif %}
+    {% if session["type"] == "PLUMBER" or session["type"] == "TRADER" %}
+        {% if gifts %}
+        <table class="table table-striped" id="gifts">
+            <h2>Gifts Won</h2>
+            <input type="text" class="form-control" id="gifts_i" onkeyup="gifts_filter()" placeholder="Search by plumber name.." style="width: 300px;">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    {% if session["type"] == "TRADER" %}
+                    <th>Plumber</th>
+                    {% endif %}
+                    <th>Gift</th>
+                </tr>
+            </thead>
+            <body>
+                {% for row in gifts %}
+                <tr>
+                    <td>{{ row[1] }}</td>
+                    {% if session["type"] == "TRADER" %}
+                    <td>{{ row[2] }} {{ row[3] }}</td>
+                    {% endif %}
+                    <td>{{ row[0] }}</td>
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+        {% endif %}
+    {% elif session["type"] == "CHECKER" %}
+        {% if redeem %}
+        <table class="table table-striped">
+            <h2>Pending Redemption Requests</h2>
+            <thead>
+                <tr>
+                    <th>Plumber</th>
+                    <th>Phone</th>
+                    <th>Points Requested for Redemption</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <body>
+                <tr>
+                    {% for row in redeem %}
+                    <td><br>{{ row[1] }} {{ row[2] }}</td>
+                    <td><br>{{ row[3] }}</td>
+                    <td><br>{{ row[4] }}</td>
+                    <td>
+                        <form action="/" method="post">
+                            <ul><input autocomplete="off" hidden class="form-control" name="red_id" type="number" value="{{ row[0] }}"></ul>
+                            <ul><input autocomplete="off" hidden class="form-control" name="gift_status" type="text" value="Selected"></ul>
+                            <ul><input autocomplete="off" hidden class="form-control" name="plumber_id" type="number" value="{{ row[5] }}"></ul>
+                            <ul><input autocomplete="off" hidden class="form-control" name="points" type="number" value="{{ row[4] }}"></ul>
+                            <ul><input autocomplete="off" autofocus class="form-control" name="gift" placeholder="Gift" type="text">&emsp;<button class="btn btn-primary" type="submit" value="submit">Submit</button></ul>
+                        </form>
+                    </td>
+                    {% endfor %}
+                </tr>
+            </body>
+        </table>
+        {% endif %}
+        {% if gift %}
+        <table class="table table-striped">
+            <h2>Approved Gifts</h2>
+            <thead>
+                <tr>
+                    <th>Store</th>
+                    <th>Plumber</th>
+                    <th>Gift</th>
+                    <th>Procurement</th>
+                </tr>
+            </thead>
+            <body>
+                {% for row in gift %}
+                <tr>
+                    <td><br>{{ row[1] }}</td>
+                    <td><br>{{ row[2] }} {{ row[3] }}</td>
+                    <td><br>{{ row[5] }}</td>
+                    <td>
+                        <form action="/" method="post">
+                            <ul><input autocomplete="off" hidden class="form-control" name="red_id" type="number" value="{{ row[0] }}"></ul>
+                            <ul><input autocomplete="off" hidden class="form-control" name="gift_status" type="text" value="Procured"></ul>
+                            <ul><input autocomplete="off" hidden class="form-control" name="gift" type="text" value="{{ row[5] }}"></ul>
+                            <ul><button class="btn btn-primary" type="submit" value="submit">Procured</button></ul>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+        {% endif %}
+
+    {% endif %}
+    {% if session["type"] != "ADMIN" %}
+        {% if invoices %}
+        <table class="table table-striped" id="invoices">
+        <h2>Pending Invoices</h2>
+        {% if session["type"] == "TRADER" %}
+        <input type="text" class="form-control" id="invoices_i" onkeyup="invoice_filter()" placeholder="Search by plumber name.." style="width: 300px;">
+        {% endif %}
+        <thead>
+            <tr>
+                {% if session["type"] == "CHECKER" %}
+                <th>Store</th>
+                {% endif %}
+                {% if session["type"] == "TRADER" or session["type"] == "CHECKER" %}
+                <th>Plumber</th>
+                {% elif session["type"] == "PLUMBER" %}
+                <th>Store</th>
+                {% endif %}
+                <th>Date</th>
+                <th>Invoice Amount</th>
+                {% if session["type"] == "TRADER" or session["type"] == "PLUMBER" %}
+                <th>Points Earned</th>
+                {% endif %}
+                <th>Invoice</th>
+                {% if session["type"] == "ACCOUNTS" or session["type"] == "CHECKER" %}
+                <th>Action(s)</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <body>
+            {% for row in invoices %}
+            <tr>
+                {% if session["type"] == "CHECKER" %}
+                <td>{{ row[16] }}</td>
+                {% endif %}
+                {% if session["type"] == "PLUMBER" %}
+                <td>{{ row[16] }}</td>
+                {% elif session["type"] == "TRADER" or session["type"] == "CHECKER" %}
+                <td>{{ row[14] }} {{ row[15] }}</td>
+                {% endif %}
+                <td>{{ row[3] }}</td>
+                <td>&#8377; {{ row[4] }}</td>
+                {% if session["type"] == "TRADER" or session["type"] == "PLUMBER" %}
+                {% if row[7] == "True" %}
+                    <td>{{ row[6] }}</td>
+                {% elif row[7] == "Rejected" %}
+                    <td>Rejected</td>
+                {% else %}
+                    <td>Pending</td>
+                {% endif %}
+                {% endif %}
+                <td>
+                    <img src="{{ url_for('send_file', filename=row[11]) }}">
+                </td>
+                {% if session["type"] == "ACCOUNTS" or session["type"] == "CHECKER" %}
+                <td>
+                    <form action="/" method="post">
+                        <ul><input autocomplete="off" hidden class="form-control" name="invoice" type="number" value="{{ row[0] }}"></ul>
+                        {% if session["type"] == "ACCOUNTS" %}
+                        <ul><input autocomplete="off" autofocus class="form-control" name="points" placeholder="Point(s)" type="number" min="0"></ul>
+                        <ul><input autocomplete="off" hidden class="form-control" name="bool" type="text" value="points_calc"></ul>
+                        <ul><button class="btn btn-primary" type="submit" value="submit">Submit</button></ul>
+                        {% elif session["type"] == "CHECKER" %}
+                        <ul><input autocomplete="off" autofocus class="form-control" name="points" placeholder="Point(s)" type="number" value="{{ row[6] }}" min="0"></ul>
+                        <ul><input autocomplete="off" hidden class="form-control" name="bool" type="text" value="points_approved"></ul>
+                        <ul><button class="btn btn-primary" type="submit" value="submit">Approve/Update</button></ul>
+                       {% endif %}
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </body>
+    </table>
+    <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+    {% endif %}
+    {% else %}
+    {% if disburse %}
+        <table class="table table-striped">
+                <h2>Pending Gift Distribution</h2>
+            <thead>
+                <tr>
+                    <th>Store</th>
+                    <th>Plumber</th>
+                    <th>Points</th>
+                    <th>Gift Selected</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <body>
+                {% for row in disburse %}
+                <tr>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }} {{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                    <td>
+                        <form action="/" method="post">
+                            <ul><button class="btn btn-primary" type="submit" value="submit">Given to Plumber</button></ul>
+                            <ul><input autocomplete="off" hidden class="form-control" name="red_id" type="number" value="{{ row[0] }}"></ul>
+                            <ul><input autocomplete="off" hidden class="form-control" name="gift" type="text" value="{{ row[5] }}"></ul>
+                            <ul><input autocomplete="off" hidden class="form-control" name="gift_status" type="text" value="Disbursed"></ul>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+        {% endif %}
+        {% if approval %}
+        <table class="table table-striped">
+                <h2>Pending Approvals</h2>
+            <thead>
+                <tr>
+                    <th>Store</th>
+                    <th>Plumber</th>
+                    <th>Points</th>
+                    <th>Gift Selected</th>
+                </tr>
+            </thead>
+            <body>
+                {% for row in approval %}
+                <tr>
+                    <td><br>{{ row[1] }}</td>
+                    <td><br>{{ row[2] }} {{ row[3] }}</td>
+                    <td><br>{{ row[4] }}</td>
+                    <td>
+                        <form action="/" method="post">
+                            <ul><input autocomplete="off" hidden class="form-control" name="red_id" type="number" value="{{ row[0] }}"></ul>
+                            <ul><input autocomplete="off" hidden class="form-control" name="gift_status" type="text" value="Approved"></ul>
+                            <ul><input autocomplete="off" autofocus class="form-control" name="gift" placeholder="Gift" type="text" value="{{ row[5] }}">&emsp;<button class="btn btn-primary" type="submit" value="Approve">Approve</button></ul>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+        {% endif %}
+    {% endif %}
+    <script>
+        function points_filter() {
+          // Declare variables
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("points_i");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("points");
+          tr = table.getElementsByTagName("tr");
+
+          // Loop through all table rows, and hide those who don't match the search query
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }
+          }
+        }
+
+        function gifts_filter() {
+          // Declare variables
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("gifts_i");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("gifts");
+          tr = table.getElementsByTagName("tr");
+
+          // Loop through all table rows, and hide those who don't match the search query
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }
+          }
+        }
+
+        function invoice_filter() {
+          // Declare variables
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("invoices_i");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("invoices");
+          tr = table.getElementsByTagName("tr");
+
+          // Loop through all table rows, and hide those who don't match the search query
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }
+          }
+        }
+    </script>
+{% endblock %}

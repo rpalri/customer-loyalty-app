@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Upload Invoice
+{% endblock %}
+
+{% block main %}
+    <h2>Upload Invoice</h2>
+    <br>
+    {% if notif %}
+        <p class="alert alert-primary border text-center"><strong>{{ notif }}</strong></p>
+    {% endif %}
+    <form enctype=multipart/form-data action="/invoice" method="post">
+        <div class="form-group">
+            <select class="form-control" name="plumber">
+                <option disabled selected value>Select Plumber</option>
+                {% for plumber in plumbers %}
+                <option value="{{ plumber.id }}">{{ plumber.first_name }} {{ plumber.last_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <input autocomplete="off" class="form-control" name="amount" placeholder="Bill Amount" type="number" min="0">
+        </div>
+        <div class="form-group">
+            <label for="img">Select Image:</label>
+            <input type="file" id="img" name="image" accept="image/*">
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit" value="upload">Submit</button>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Points Tally
+{% endblock %}
+
+{% block main %}
+    {% if notif %}
+        <p class="alert alert-primary border text-center"><strong>{{ notif }}</strong></p>
+    {% endif %}
+    {% if traders %}
+        <table class="table table-striped" id="traders">
+            <h2>Traders</h2>
+            <input type="text" class="form-control" id="traders_i" onkeyup="trader_filter()" placeholder="Search by store name.." style="width: 300px;">
+            <h2></h2>
+            <thead>
+                <tr>
+                    <th>Store</th>
+                    <th>Invoice Amount</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <body>
+                {% for row in traders %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>&#8377; {{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+    {% endif %}
+    {% if plumbers %}
+        <table class="table table-striped" id="plumbers">
+            <h2>Plumbers</h2>
+            <input type="text" class="form-control" id="plumbers_i" onkeyup="plumber_filter()" placeholder="Search by plumber name.." style="width: 300px;">
+            <h2></h2>
+            <thead>
+                <tr>
+                    <th>Plumber</th>
+                    <th>Store</th>
+                    <th>Invoice Amount</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <body>
+                {% for row in plumbers %}
+                <tr>
+                    <td>{{ row[0] }} {{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>&#8377; {{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                </tr>
+                {% endfor %}
+            </body>
+        </table>
+    {% endif %}
+    <script>
+        function trader_filter() {
+          // Declare variables
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("traders_i");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("traders");
+          tr = table.getElementsByTagName("tr");
+
+          // Loop through all table rows, and hide those who don't match the search query
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }
+          }
+        }
+
+        function plumber_filter() {
+          // Declare variables
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("plumbers_i");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("plumbers");
+          tr = table.getElementsByTagName("tr");
+
+          // Loop through all table rows, and hide those who don't match the search query
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }
+          }
+        }
+    </script>
+{% endblock %}

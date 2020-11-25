@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    {% if session["type"] == "TRADER" %}
+    <h2>Plumber Registration</h2>
+    {% else %}
+    <h2>Trader Registration</h2>
+    {% endif %}
+    <br>
+    {% if notif %}
+        <p class="alert alert-primary border text-center"><strong>{{ notif }}</strong></p>
+    {% endif %}
+    <form action="/request_OTP" method="post">
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" name="phone" placeholder="+(country code)(phone number)" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Get OTP</button>
+    </form>
+{% endblock %}
