@@ -1,5 +1,14 @@
 {
     "python.pythonPath": "/opt/anaconda3/envs/loyalty_app/bin/python",
     "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 100,
+            "driver": "SQLite",
+            "name": "loyalty",
+            "database": "${workspaceFolder:customer-loyalty-app}/plumber.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
 }

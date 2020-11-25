@@ -280,7 +280,7 @@ def sendSMS(number): #Twilio
     client = Client(account_sid, auth_token)
     OTP = randint(100001, 999999)
     session["OTP"] = OTP
-    body = "Your OTP for registering on Puranmal Sons Plumbing Network is " + str(OTP)
+    body = "Your OTP for registering on Customer Loyalty App is " + str(OTP)
     message = client.messages.create(from_=os.environ["FROM_NUMBER"], body=body, to=number)
 
     if message.sid:
@@ -294,7 +294,7 @@ def sendSMS(number): #Twilio
 #     OTP = randint(100001, 999999)
 #     session["OTP"] = OTP
 #     print(OTP)
-#     message = "Your OTP for registering on Puranmal Sons Plumbing Network is " + str(OTP)
+#     message = "Your OTP for registering on Customer Loyalty App is " + str(OTP)
 #     data =  urllib.parse.urlencode({"apikey": apikey, "numbers": number,
 #         "message" : message, "sender": "Jims Autos"})
 #     data = data.encode("utf-8")
