@@ -46,7 +46,7 @@ This app aims to fill this gap between the two. A manufacturer, or a distributor
 * login as admin with this as username and password: "789789"
 
 ## Support
-In case you find time to report any errors or bugs, you can write to me directly at rmpalri@gmail.com or visit [palrigraphy.ccom](palrigraphy.com/contact) to see others ways of connecting with me.
+In case you find time to report any errors or bugs, you can write to me directly at rmpalri@gmail.com or visit [palrigraphy.com](palrigraphy.com/contact) to see others ways of connecting with me.
 If you want to deploy this app for your company, write to me and we can discuss specifications to customise the web-app per your requirements.
 
 ## Roadmap
