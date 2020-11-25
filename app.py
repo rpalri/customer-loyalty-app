@@ -18,7 +18,6 @@ from werkzeug.utils import secure_filename
 from helpers import login_required
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
-UPLOAD_PATH = "uploads"
 
 os.environ["TWILIO_ACCOUNT_SID"] = ""
 os.environ["TWILIO_AUTH_TOKEN"] = ""
@@ -40,7 +39,7 @@ def after_request(response):
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.config["UPLOAD_PATH"] = UPLOAD_PATH
+app.config["UPLOAD_PATH"] = "uploads"
 app.config["MAX_CONTENT_LENGTH"] = 10240 * 10240
 app.config["UPLOAD_EXTENSIONS"] = [".jpg", ".png", ".jpeg"]
 Session(app)
