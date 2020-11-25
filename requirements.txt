@@ -5,7 +5,6 @@ Werkzeug==1.0.1
 pandas
 numpy
 flask
-imghdr
 sqlite3
 urllib.request
 urllib.parse
